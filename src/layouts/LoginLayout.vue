@@ -3,21 +3,24 @@
       <div class="forms-container">
         <div class="signin-signup">
           <form action="#" class="sign-in-form">
-            <h2 class="title">Đăng nhập</h2>
-            <div class="input-field">
-              <i class="fas fa-user"></i>
-              <input type="email" v-model="email" placeholder="Email"/>
+            <div class="form-login" >
+              <h2 class="title">Đăng nhập</h2>
+                <div class="input-field">
+                  <i class="fas fa-user"></i>
+                  <input type="email" v-model="email" placeholder="Email"/>
+                </div>
+                <p class="error" >{{errorEmail}}</p>
+                <div class="input-field">
+                  <i class="fas fa-lock"></i>
+                  <input type="password" v-model="password" placeholder="Password" />
+                </div>
+                <p class="error" >{{errorPass}}</p>
+                <input type="submit" @click="submit" value="Đăng nhập" class="btn solid" />
             </div>
-            <p class="error" >{{errorEmail}}</p>
-            <div class="input-field">
-              <i class="fas fa-lock"></i>
-              <input type="password" v-model="password" placeholder="Password" />
-            </div>
-            <p class="error" >{{errorPass}}</p>
-            <input type="submit" @click="submit" value="Đăng nhập" class="btn solid" />
           </form>
           <form action="#" class="sign-up-form">
-            <h2 class="title">Đăng ký</h2>
+            <div class="register-form">
+              <h2 class="title">Đăng ký</h2>
             <div class="input-field">
               <i class="fas fa-user"></i>
               <input type="text" v-model="name" placeholder="Tên người dùng" />
@@ -38,7 +41,8 @@
               <input type="password"  v-model="passRepeat" placeholder="Nhâp lại mật khẩu" />
             </div>
             <p class="error" >{{errorPassRepeat}}</p>
-            <input type="submit" @click="submitRegister" class="btn" value="Đăng ký" />
+            <input type="submit" @click="submitRegister" class="btn" value="Đăng ký" /> 
+            </div>
           </form>
         </div>
       </div>
@@ -188,8 +192,15 @@ export default {
     }
 }
 </script>
-<style lang="less">
-
+<style scoped lang="less">
+.register-form {
+  text-align: center;
+    padding: 28px 28px;
+    margin-bottom: 56px;
+    background-color: aliceblue;
+    border-radius: 10px;
+    box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
+}
 * {
   margin: 0;
   padding: 0;
@@ -221,6 +232,7 @@ input {
   color: red;
   width: 360px;
   text-align: initial;
+  margin-left:10px;
 }
 
 .signin-signup {
@@ -259,7 +271,7 @@ form.sign-in-form {
 .title {
   font-size: 1.5rem;
   color: #444;
-  margin-bottom: 10px;
+  margin-bottom: 27px;
 }
 
 .input-field {
@@ -273,6 +285,7 @@ form.sign-in-form {
   grid-template-columns: 15% 85%;
   padding: 0 0.4rem;
   position: relative;
+  margin-bottom: 20px;
 }
 
 .input-field i {
@@ -290,6 +303,7 @@ form.sign-in-form {
   line-height: 1;
   font-size: 0.8rem;
   color: rgb(134, 134, 134);
+  border-radius: 17px;
 }
 
 .input-field input::placeholder {
@@ -592,6 +606,13 @@ form.sign-in-form {
     bottom: 28%;
     left: 50%;
   }
+ 
 }
+ .form-login {
+    padding: 40px 28px;
+    background-color: aliceblue;
+    border-radius: 13px;
+    box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
+  }
 </style>
 

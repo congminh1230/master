@@ -23,7 +23,7 @@
                     </el-dropdown>
                 </div>
             </el-header>
-            <el-main>
+            <el-main style="background: #f4f0ec;"  >
                 <router-view/>
             </el-main>
         </el-container>
@@ -87,7 +87,7 @@ export default {
     text-align: left;
 }
 .el-container {
-    height: 800px;
+    height: 930px;
 }
 .el-badge__content.is-fixed {
     top:10px !important;
@@ -122,5 +122,8 @@ export default {
 }
 .link:hover {
     color: #409EFF;
+}
+.el-main {
+  background-image: url('../assets/minh.jpg') ;
 }
 </style>

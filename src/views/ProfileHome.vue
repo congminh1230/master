@@ -106,12 +106,17 @@ validation() {
     },
     },
     
-    watch() {
-      
+    watch: {
+      name() {
+        this.errorName = ''
+      },
+      email() {
+        this.errorEmail = ''
+      }
     }
 }
 </script>
-<style lang="less">
+<style scoped lang="less">
 .title {
   text-align: center;
   width: 440px;
