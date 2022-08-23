@@ -2,7 +2,7 @@
    <div ref="container" class="container">
       <div class="forms-container">
         <div class="signin-signup">
-          <form action="#" class="sign-in-form">
+          <div id="form"  class="sign-in-form">
             <div class="form-login" >
               <h2 class="title">Đăng nhập</h2>
                 <div class="input-field">
@@ -17,8 +17,8 @@
                 <p class="error" >{{errorPass}}</p>
                 <input type="submit" @click="submit" value="Đăng nhập" class="btn solid" />
             </div>
-          </form>
-          <form action="#" class="sign-up-form">
+          </div>
+          <div id="form"  class="sign-up-form">
             <div class="register-form">
               <h2 class="title">Đăng ký</h2>
             <div class="input-field">
@@ -43,7 +43,7 @@
             <p class="error" >{{errorPassRepeat}}</p>
             <input type="submit" @click="submitRegister" class="btn" value="Đăng ký" /> 
             </div>
-          </form>
+          </div>
         </div>
       </div>
 
@@ -77,6 +77,10 @@
 
 
 <script>
+import  api from '../api/index'
+import _ from "lodash";
+import { mapMutations } from "vuex";
+
 export default {
     name: 'LoginLayout',
     data() {
@@ -96,24 +100,56 @@ export default {
         }
     },
     methods: {
+      ...mapMutations("auth", ["updateLoginStatus", "updateAccessToken", "updateAuthUser"]),
         changeRegister () {
             this.$refs.container.classList.add('sign-up-mode')
         },
         changeLogin () {
+          console.log(1)
             this.$refs.container.classList.remove('sign-up-mode')
+
+
         },
         submit() {
             if(this.checkValidation()) {
-                this.$router.push('/')
+              let data = {
+                email: this.email,
+                password: this.password
+              }
+              api.login(data).then((res) => {
+                this.updateAccessToken(_.get(res, "data.access_token"));
+                this.updateLoginStatus(true);
+                // this.getAuthUser();
+                this.$router.push({ name: "home" });
+              }).catch(error => {
+                console.log(error)
+                this.$message({
+                  message: "Thông tin tài khoản hoặc mật khẩu không chính xác",
+                  type: "error",
+                });
+              })
+
             }
         },
         submitRegister() {
             if(this.checkValidationRegister()) {
-                this.$message({
-                message: 'Đăng kí thành công.',
-                type: 'success'
-            });
-                this.$refs.container.classList.remove('sign-up-mode')
+                let data = {
+                  name: this.name,
+                  email: this.emailRegister,
+                  password: this.passRegister
+                }
+                api.register(data).then((res) => {
+                  if(res) {
+                    this.$refs.container.classList.remove('sign-up-mode')
+                    this.$message({
+                      message: 'Đăng kí thành công.',
+                      type: 'success'
+                    });
+                  }
+                }).catch(error => {
+                  let errors = _.get(error, 'response.data.error.email[0]', {})
+                  this.errorEmailRegister = errors
+                });
             }
         },
         checkValidation() {
@@ -247,7 +283,7 @@ input {
   z-index: 5;
 }
 
-form {
+#form {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -259,12 +295,12 @@ form {
   grid-row: 1 / 2;
 }
 
-form.sign-up-form {
+.sign-up-form {
   opacity: 0;
   z-index: 1;
 }
 
-form.sign-in-form {
+.sign-in-form {
   z-index: 2;
 }
 
@@ -456,12 +492,12 @@ form.sign-in-form {
   left: 25%;
 }
 
-.container.sign-up-mode form.sign-up-form {
+.container.sign-up-mode .sign-up-form {
   opacity: 1;
   z-index: 2;
 }
 
-.container.sign-up-mode form.sign-in-form {
+.container.sign-up-mode .sign-in-form {
   opacity: 0;
   z-index: 1;
 }

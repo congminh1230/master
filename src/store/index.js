@@ -1,20 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import  home from  './home/index'
+import home from './home/index'
+import auth from './auth/index'
+import user from './user/index'
+import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
-    state: {
-        // Khai báo global state
-    },
-    mutations: {
-        // Khai báo mutations
-    },
     modules: {
-        home
-    }
-
+        home,
+        auth,
+        user,
+    },
+    plugins: [createPersistedState({paths: ['auth']})]
 })
 
 export default store

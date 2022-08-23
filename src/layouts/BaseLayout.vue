@@ -4,10 +4,10 @@
             <el-header>
                 <div class="header">
                   <router-link style="display: flex;
-    align-items: center;" to="/"><img class="logo" src="https://ims.zentsoft.com/img/logo_light.cf0d060b.png" /></router-link>
+    align-items: center;" to="/"><img class="logo" src="../assets/logo.png" /></router-link>
                 </div>
                 <div class="user">
-                    <span>Xin chào</span>
+                    <span>Xin chào {{authUser.name}}</span>
                 </div>
                 <div class="dropHeader">
                     <el-dropdown>
@@ -18,7 +18,7 @@
                             <el-dropdown-item ><router-link to="profile" class="link">Thông tin tài khoản</router-link></el-dropdown-item>
                             <el-dropdown-item >Đổi mật khẩu</el-dropdown-item>
                             <el-dropdown-item >Cấu hình</el-dropdown-item>
-                            <el-dropdown-item ><router-link class="link" to="login">Đăng xuất</router-link></el-dropdown-item>
+                            <el-dropdown-item ><el-dropdown-item style="padding: 0" class="link" to="login" @click.native="logout" >Đăng xuất</el-dropdown-item></el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </div>
@@ -30,17 +30,41 @@
     </el-container>
 </template>
 <script>
+import {mapMutations, mapActions, mapState, mapGetters} from 'vuex'
+import  api from '../api/index'
+import _ from "lodash";
 export default {
   name: 'HomePage',
   data() {
    return {
-      url:'https://1.bigdata-vn.com/wp-content/uploads/2021/12/Hinh-Nen-Girl-Xinh-Full-HD-Cho-Laptop-Va-May.jpg',
    }
   },
+  computed: {
+    ...mapState('home', [
+      'title',
+      'defaultActive',
+      'count',
+      'prevRoute',
+    ]),
+    ...mapGetters('auth', ['hasPermission']),
+    ...mapState('auth', [
+      'authUser'
+    ])
+  },
+  mounted() {
+    this.getAuthUser();
+  },
   methods: {
-    hanld(data) {
-        this.$router.push({ path: data,})
-    }
+    ...mapMutations('auth', ['updateAuthUser']),
+    ...mapActions('auth', ['logout']),
+    ...mapMutations('home', [
+      'changeCount'
+    ]),
+    getAuthUser() {
+      api.getAuthUser().then((res) => {
+        this.updateAuthUser(_.get(res, 'data'));
+      });
+    },
   }
 }
 

@@ -39,11 +39,17 @@
                       </div>
                     </div>
                     <div class="inputWarp">
-                      <label>Địa chỉ</label>
-                      <el-input type="textarea" :rows="5" v-model="address"></el-input>
-                      <div v-if="errorAddress !== '' " class="error">
-                        <span> {{ errorAddress }} </span>
-                      </div>
+                      <label>Ảnh đại diện </label>
+                      <el-upload
+                          class="avatar-uploader"
+                          action="http://vuecourse.zent.edu.vn/api/users"
+                          :show-file-list="false"
+                          :on-success="handleAvatarSuccess"
+                          :before-upload="beforeAvatarUpload">
+                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                      </el-upload>
+
                     </div>
                       <div class="footerForm">
                         <el-button type="primary"  @click="handleUpdateInfo">Cập nhật</el-button>
@@ -58,6 +64,7 @@
 
 <script>
 import {isValidEmail, isValidPhone} from "../ulits/helper.js";
+import {mapState} from "vuex";
 
 export default {
     name: 'ProfileHome',
@@ -69,17 +76,33 @@ export default {
             address: '',
             errorName:'',
             errorEmail:'',
-            errorPhone:''
+            errorPhone:'',
+            imageUrl: ''
 
         }
+    },
+  mounted() {
+      this.name = this.authUser.name
+      this.email = this.authUser.email
+  },
+  computed: {
+      ...mapState('auth', [
+        'authUser'
+      ])
     },
     methods: {
       handleUpdateInfo() {
         if(this.validation()) {
           console.log(1)
+          // this.imageUrl = URL.createObjectURL(file.raw);
         }
       },
-validation() {
+      handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+        console.log(this.imageUrl)
+      },
+
+      validation() {
        let error = false;
        console.log(1)
       if (this.name.length === 0) {
@@ -170,5 +193,29 @@ validation() {
 }
 .form {
   text-align: initial;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 138px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>

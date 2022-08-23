@@ -1,19 +1,21 @@
 <template>
   <div id="app">
-    <!-- <router-view/> -->
-    <BaseLayout/> 
+    <BaseLayout v-if="isAuthenticated" />
+    <LoginLayout v-else />
   </div>
 </template>
 <script>
 import BaseLayout from './layouts/BaseLayout.vue'
+import LoginLayout from "./layouts/LoginLayout.vue";
+import {mapState} from 'vuex'
+
 export default {
   name:'App',
-  data() {
-    return {
-
-    }
+  computed: {
+    ...mapState('auth', ['isAuthenticated']),
   },
   components: {
+    LoginLayout,
     BaseLayout
   }
 }

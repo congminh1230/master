@@ -71,6 +71,9 @@
 <script>
 import draggable from "vuedraggable";
 import AboutView from "../views/AboutView";
+import  api from  "../api/index"
+import _ from "lodash";
+
 
 export default {
   name: "table-column-example",
@@ -88,10 +91,27 @@ export default {
       input:""
     };
   },
+  mounted() {
+    this.getListDirectory()
+  },
   methods: {
     submit() {
       this.show = false
-      this.headers.push(this.input);
+      // this.headers.push(this.input);
+      let data = {
+        title: this.input,
+        index: '1'      }
+      api.createDirectory(data).then((res) => {
+        console.log(res)
+        this.getListDirectory()
+      })
+    },
+    getListDirectory() {
+      api.getDirectory().then((res) => {
+        console.log(res)
+        this.headers = _.get(res, 'data')
+        console.log(this.headers)
+      })
     },
     submitCan() {
       this.show = false
