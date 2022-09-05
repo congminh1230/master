@@ -57,17 +57,11 @@ export default {
             params:params
         })
     },
-    // list(data) {
-    //     return  apiAxios({
-    //         method: 'post',
-    //         url: 'check-lists',
-    //         data:data
-    //     })
-    // },
+
     getDirectory() {
         return  apiAxios({
             method: 'get',
-            url: 'directories',
+            url: '/directories',
         })
     },
     createDirectory(data) {
@@ -76,5 +70,174 @@ export default {
             url: 'directories',
             data:data
         })
-    }
+    },
+    update(id,data) {
+        return apiAxios({
+            method: 'put',
+            url: 'directories/' + id,
+            data:data
+        })
+    },
+    createList(data) {
+        return  apiAxios({
+            method: 'post',
+            url: 'cards',
+            data:data
+        })
+    },
+    updateUser(data) {
+        return apiAxios({
+            method: "post",
+            url: "/users",
+            data:data
+        })
+    },
+    deleteDirectory(id) {
+        return  apiAxios({
+            method: 'delete',
+            url: 'directories/' + id,
+        })
+    },
+
+    changeCard(data) {
+        return  apiAxios({
+            method: "put",
+            url: `/cards/${data.card_id}/index`,
+            data:data
+        })
+    },
+    changeDirectory(data) {
+        return  apiAxios({
+            method: "put",
+            url: `/cards/${data.card_id}/directory`,
+            data:data
+        })
+    },
+    updateCard(id) {
+        return  apiAxios({
+            method: "put",
+            url: `/cards/` +id,
+        })
+    },
+    updateTileCard(data,id) {
+        return apiAxios({
+            method: "put",
+            url: `/cards/` +id,
+            data:data
+        })
+    },
+    deleteCard(id) {
+        return apiAxios({
+            method: "delete",
+            url: `/cards/` +id,
+        })
+    },
+    updateStatus(data) {
+        return apiAxios({
+            method: "put",
+            url: `/cards/${data.card_id}/change-status`,
+            data:data
+        })
+    },
+    addLabel(data) {
+        return apiAxios({
+            method: "post",
+            url: `/cards/${data.card_id}/label`,
+            data:data
+        })
+    },
+    getLabel() {
+        return apiAxios({
+            method: "get",
+            url: "/labels",
+        })
+    },
+    destroyLabelInCard(data) {
+        return apiAxios({
+            method: "delete",
+            url: `/cards/${data.card_id}/detach-labels`,
+            data:data
+        })
+    },
+    addLabelInCard(data) {
+        return apiAxios({
+            method: "post",
+            url: `/cards/${data.card_id}/attach-labels`,
+            data:data
+        })
+    },
+    addWork(data) {
+        return apiAxios({
+            method: "post",
+            url: "/check-lists",
+            data:data
+        })
+    },
+    addFile(data) {
+        return apiAxios({
+            method: "post",
+            url: `/cards/${data.get('card_id')}/upload-file`,
+            data:data
+        });
+    },
+    detailCard(id) {
+        return apiAxios({
+            method: "get",
+            url: `/cards/${id}`,
+        })
+    },
+    updateDeadline(data) {
+        return apiAxios({
+            method: "put",
+            url: `/cards/${data.card_id}/change-status-deadline`,
+            data:data
+        })
+    },
+    updatePassword(data) {
+        return apiAxios({
+            method: "put",
+            url: "/users/password",
+            data:data
+        })
+    },
+    destroyWork(id) {
+        return apiAxios({
+            method: "delete",
+            url: `/check-lists/${id}`,
+        })
+    },
+    destroyWorkChildren(id) {
+        return apiAxios({
+            method: "delete",
+            url: `/check-list-childs/${id}`,
+        })
+    },
+    addWorkChildren(data) {
+        return apiAxios({
+            method: "post",
+            url: "/check-list-childs",
+            data:data
+        })
+    },
+    updateWorkChildren(data) {
+        return apiAxios({
+            method: "put",
+            url: `/check-list-childs/${data.check_list_child_id}`,
+            data:data
+        })
+    },
+    updateWork(data) {
+        return apiAxios({
+            method: "put",
+            url: `/check-lists/${data.check_list_id}`,
+            data:data
+        })
+    },
+    updateStatusWorkChildren(data) {
+        return apiAxios({
+            method: "put",
+            url: `/check-list-childs/${data.id}/change-status`,
+            data:data
+        })
+    },
 }

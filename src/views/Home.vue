@@ -2,35 +2,30 @@
   <div class="row">
     <div class="col-8">
       <div class="content" >
-<!--        <div class="">-->
-<!--          <thead class="thead-dark">-->
-<!--          <draggable v-model="headers" tag="tr">-->
-<!--            <th v-for="header in headers" :key="header" scope="col">-->
-<!--              <div class="title" >-->
-<!--                {{ header }}-->
-<!--              </div>-->
-<!--            </th>-->
-<!--          </draggable>-->
-<!--          </thead>-->
-<!--          <tbody>-->
-<!--          <tr v-for="item in list" :key="item.name">-->
-<!--            <td v-for="header in headers" :key="header">-->
-<!--              <AboutView/>-->
-<!--            </td>-->
-<!--          </tr>-->
-<!--          </tbody>-->
-<!--        </div>-->
         <div class="">
           <div class="thead-dark">
-          <draggable v-model="headers" class="listPos" >
-            <div v-for="header in headers" :key="header" class="col" scope="col">
+          <draggable v-model="headers" class="listPos"
+
+          >
+            <div v-for="header in headers" :key="header"  class="col" scope="col">
               <div class="min" >
-                <div class="title" >
-                  {{ header }}
+                <div class="block">
+                  <div class="block_title" >
+                    <a class="open-add-list js-open-add-list" @click="onchange(header)">
+                      <div class="title open-add-list js-open-add-list">
+                        {{ header.title }}
+                      </div>
+                    </a>
+                    <div  style="cursor: pointer" @click="handleDeleteDirectory(header.id)" >
+                      <i class="el-icon-delete"></i>
+                    </div>
+                  </div>
                 </div>
                 <div>
-                  <div style="padding: 0 11px;" >
-                    <AboutView/>
+                  <div style="padding: 0 11px;">
+                    <AboutView  :name="header.cards" :index="header.index"  :id="header.id"
+                      @handleUpdateDirectories="UpdateDirectories"
+                    />
                   </div>
                 </div>
               </div>
@@ -38,7 +33,6 @@
           </draggable>
           </div>
           <div>
-
           </div>
         </div>
         <div class="addContent" >
@@ -49,7 +43,7 @@
                 Thêm danh sách khác
               </span>
             </a>
-            <div >
+            <div>
               <transition name="el-fade-in">
                 <div v-show="show" class="transition-box">
                   <el-input class="input_title" placeholder="Please input" v-model="input"></el-input>
@@ -62,12 +56,40 @@
         </div>
       </div>
       </div>
-
     <rawDisplayer class="col-2" :value="list" title="List" />
     <rawDisplayer class="col-2" :value="headers" title="Headers" />
+    <el-dialog
+        width="35%"
+        top="5vh"
+        v-loading="loading"
+        :title="modalTitle"
+        :visible.sync="iShowModalCategory"
+        class="modal-categories"
+        :close-on-click-modal="false"
+    >
+      <el-row :gutter="24">
+        <el-col :span="24">
+          <el-row>
+            <div class="input-warp">
+              <label>Tên danh sách
+                <span class="required">*</span>
+              </label>
+              <el-input v-model="name"></el-input>
+              <div v-if="errorName !== '' " class="error">
+                <span> {{ errorName }} </span>
+              </div>
+            </div>
+          </el-row>
+        </el-col>
+      </el-row>
+      <span slot="footer">
+        <el-button @click="closeModal">Đóng</el-button>
+        <el-button type="primary" @click="updateTitle">Lưu
+        </el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
-
 <script>
 import draggable from "vuedraggable";
 import AboutView from "../views/AboutView";
@@ -76,6 +98,7 @@ import _ from "lodash";
 
 
 export default {
+
   name: "table-column-example",
   display: "Table Column",
   order: 9,
@@ -88,33 +111,100 @@ export default {
       headers: [],
       dragging: false,
       show: false,
-      input:""
+      input:"",
+      showTitle:'',
+      none:"",
+      name:'',
+      iShowModalCategory: false,
+      title_id:'',
+      list:[],
+      lol:''
     };
+  },
+  submitLol() {
+    let data = {
+      title:this.lol
+    }
+    this.list.push(data)
+    console.log(this.list)
+
+  },
+  getListDirectory() {
+    api.getDirectory().then((res) => {
+      this.headers = _.get(res, 'data.data')
+    })
   },
   mounted() {
     this.getListDirectory()
   },
   methods: {
+    // handleMoveCardInDirectories() {
+    //
+    // },
+    handleDeleteDirectory(id) {
+      this.$confirm('Dữ liệu không thể phục hồi, Bạn có muốn biếp tục?', 'Cảnh báo', {
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Đóng',
+        confirmButtonClass: 'deleteConfirm',
+        type: 'warning'
+      }).then(() => {
+        api.deleteDirectory(id).then( () => {
+          this.$message({
+            showClose: true,
+            type: 'success',
+            message: 'Xóa phiếu thành công'
+          });
+          this.getListDirectory()
+        })
+      })
+    },
+    onchange(data) {
+      // this.showTitle = true
+      // this.$refs.message.style.color = 'red';
+      this.showTitle = !this.showTitle
+      this.iShowModalCategory = true;
+      this.name = data.title
+      this.title_id = data.id
+    },
+    closeModal() {
+      this.iShowModalCategory = false;
+
+    },
+
+    updateTitle() {
+      let data = {
+        title: this.name
+      }
+      api.update(this.title_id,data).then(() => {
+        this.iShowModalCategory = false
+        this.getListDirectory()
+        this.$message({
+          message : 'Cập nhật danh sách thành công',
+          type : 'success'
+        });
+      })
+    },
     submit() {
       this.show = false
-      // this.headers.push(this.input);
       let data = {
         title: this.input,
-        index: '1'      }
-      api.createDirectory(data).then((res) => {
-        console.log(res)
+        index: '1'
+      }
+      api.createDirectory(data).then(() => {
         this.getListDirectory()
       })
     },
     getListDirectory() {
       api.getDirectory().then((res) => {
-        console.log(res)
-        this.headers = _.get(res, 'data')
-        console.log(this.headers)
-      })
+        this.headers = _.get(res, 'data.data')
+       })
     },
     submitCan() {
       this.show = false
+    },
+    UpdateDirectories() {
+      this.getListDirectory()
+      console.log(123)
     }
   }
 };
@@ -152,8 +242,9 @@ export default {
 }
 .title {
   width: 272px;
-  padding: 14px;
+  //padding: 14px;
   font-weight: 600;
+  cursor:pointer;
 }
 td {
   background-color: white;
@@ -197,5 +288,13 @@ td {
 }
 .el-button {
   padding: 6px 14px;
+}
+.block {
+
+}
+.block_title {
+  display: flex;
+  align-items: center;
+  padding: 7px 12px;
 }
 </style>

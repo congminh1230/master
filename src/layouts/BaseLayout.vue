@@ -12,7 +12,7 @@
                 <div class="dropHeader">
                     <el-dropdown>
                         <span class="el-dropdown-link">
-                          <img class="avatar" :src="url" alt="">
+                          <img class="avatar" :src="img" alt="">
                         </span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item ><router-link to="profile" class="link">Thông tin tài khoản</router-link></el-dropdown-item>
@@ -23,7 +23,7 @@
                     </el-dropdown>
                 </div>
             </el-header>
-            <el-main style="background: #f4f0ec;"  >
+            <el-main >
                 <router-view/>
             </el-main>
         </el-container>
@@ -37,6 +37,7 @@ export default {
   name: 'HomePage',
   data() {
    return {
+     img:''
    }
   },
   computed: {
@@ -53,6 +54,7 @@ export default {
   },
   mounted() {
     this.getAuthUser();
+    this.img = 'http://vuecourse.zent.edu.vn/storage/users/'+ this.authUser.avatar;
   },
   methods: {
     ...mapMutations('auth', ['updateAuthUser']),
@@ -111,7 +113,7 @@ export default {
     text-align: left;
 }
 .el-container {
-    height: 930px;
+    height:760px;
 }
 .el-badge__content.is-fixed {
     top:10px !important;
@@ -148,6 +150,10 @@ export default {
     color: #409EFF;
 }
 .el-main {
-  background-image: url('../assets/minh.jpg') ;
+  background-image: url("../assets/minh.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 100vh;
 }
 </style>

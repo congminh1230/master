@@ -8,9 +8,9 @@ export default {
         accessToken: '',
     },
     getters: {
-        hasPermission: (state) => {
+        hasPermission: (state) => (permission) => {
             if (state.authUser.permissions) {
-                return state.authUser
+                return state.authUser.permissions.find(e => e.name == permission || e.name == 'super-admin')
             }
         },
     },
